@@ -49,8 +49,8 @@
 //   return (
 //     <Layout>
 //       <div className="space-y-6">
-//         <SearchBar 
-//           searchTerm={searchTerm} 
+//         <SearchBar
+//           searchTerm={searchTerm}
 //           onSearchChange={setSearchTerm}
 //         />
 //         <DataTable data={filteredData} />
@@ -58,7 +58,6 @@
 //     </Layout>
 //   );
 // }
-
 
 //////////////////// =========================================== ///////////////////////////////////
 // 'use client';
@@ -97,8 +96,8 @@
 //   return (
 //     <Layout>
 //       <div className="space-y-6">
-//         <SearchBar 
-//           searchTerm={searchTerm} 
+//         <SearchBar
+//           searchTerm={searchTerm}
 //           onSearchChange={setSearchTerm}
 //         />
 //         <DataTable data={filteredData} />
@@ -107,58 +106,53 @@
 //   );
 // }
 
-
 //////////////////// =========================================== ///////////////////////////////////
 
+"use client";
 
-'use client';
+import React, { useState, useEffect } from "react";
+import { supabase } from "./supabaseClient";
+import Layout from "./components/Layout";
+import SearchBar from "./components/SearchBar";
+import DataTable from "./components/DataTable";
 
-import React, { useState, useEffect } from 'react';
-import { supabase } from './supabaseClient';
-import Layout from './components/Layout';
-import SearchBar from './components/SearchBar';
-import DataTable from './components/DataTable';
-
-interface TravelData {
-  surname: string;
+export interface DataRow {
+  Surname: string;
   otherName: string;
-  passportNumber: string;
-  'Type of travel document': string;
-  // Add other fields as necessary
+  Passportnumber: string;
+  type_of_travel_document: string;
+  status?: string; // Added status property
 }
 
 export default function Home() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [data, setData] = useState<TravelData[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [data, setData] = useState<DataRow[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase
-        .from('Foreign_Travel')
-        .select('*');
+      const { data, error } = await supabase.from("Foreign_Travel").select("*");
       if (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } else {
-        setData(data as TravelData[]);
+        setData(data as DataRow[]);
       }
     };
 
     fetchData();
   }, []);
 
-  const filteredData = data.filter(item =>
-    Object.values(item).some(value =>
-      typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = data.filter((item) =>
+    Object.values(item).some(
+      (value) =>
+        typeof value === "string" &&
+        value.toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
 
   return (
     <Layout>
       <div className="space-y-6">
-        <SearchBar 
-          searchTerm={searchTerm} 
-          onSearchChange={setSearchTerm}
-        />
+        <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         <DataTable data={filteredData} />
       </div>
     </Layout>
